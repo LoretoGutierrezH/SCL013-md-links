@@ -1,4 +1,29 @@
 {
   "name": "md-links",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "description": "## Super librería para identificar links y su estado",
+  "main": "main.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LoretoGutierrezH/SCL013-md-links.git"
+  },
+  "keywords": [
+    "js",
+    "node"
+  ],
+  "author": "Loreto y Genesis",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LoretoGutierrezH/SCL013-md-links/issues"
+  },
+  "homepage": "https://github.com/LoretoGutierrezH/SCL013-md-links#readme",
+  "dependencies": {
+    "colors": "^1.4.0"
+  }
 }
