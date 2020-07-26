@@ -7,8 +7,10 @@ const arguments = process.argv;
 
 const filePath = arguments[2];
 
-
+//después esto hay que transformarlo en mdLinks(path, options) para versión API;
 indexFunctions.readMD(filePath);
+
+ 
 
 //PROBANDO SINTÁXIS DE PROMESAS
 /* const validateURL = (url) => {
