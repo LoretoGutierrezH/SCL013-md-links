@@ -46,13 +46,14 @@ const filterTextAndHref = (DOM, path) => {
 
   textAndHref.forEach(link => {
     console.log(link.file, link.text, link.href);
-    checkStatus(link.href);
+    //checkStatus(link.href);
   })
   //return textAndHref;
 
 }
 
 // 1. Función que lee la ruta del archivo .md entregada en la terminal como argumento
+// *este es el que se tiene que llamar mdLinks para la versión API, con path y options
 const readMD = (path) => {
   fs.readFile(path, (err, data) => {
     if (err) {
@@ -76,7 +77,7 @@ file.readMD = readMD;
 module.exports = file; */
 
 
-//Lo mismo de arriba, pero más ordenado
+//Lo mismo de arriba, pero más ordenado (del loquito Caponeeee)
 module.exports = {
   readMD: readMD,
 }
