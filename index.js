@@ -7,19 +7,49 @@ const { JSDOM } = jsdom;
 //ejemplo de uso --> let result = md.render('lo que quiero transformar en html');
 //console.log(result);
 
+
+//4. Solicitud HTTP mediante axios
+
+const axios = require('axios');
+
+const checkStatus = (href) => {
+  axios.get(href)
+  .then(response => console.log(response.status, response.statusText))
+  .catch(error => console.log('404 Fail'));
+}
+
+
+
+
+//3. Función para limitar texto a 50 caracteres
+const truncateTo50 = (text) => {
+  if (text.length > 50) {
+    const text50 = text.slice(0, 50);
+    return text50;
+  } else {
+    return text;
+  }
+}
+
 //2. Función que filtra los elementos "a" (links) del DOM y devuelve array de objetos
 const filterTextAndHref = (DOM, path) => {
  const anchors = DOM.window.document.querySelectorAll('a');
  const anchorsArray = Array.from(anchors);
- const textAndHref = anchorsArray.map(a => {
+ //Para filtrar anchors que son URLs externas
+ const UrlAnchorsOnly = anchorsArray.filter(a => a.href.includes('http'));
+
+ const textAndHref = UrlAnchorsOnly.map(a => {
    return {
-     text: a.innerHTML,
+     text: truncateTo50(a.innerHTML),
      href: a.href,
      file: path
    };
- })
-  //3. Crear función para limitar texto a 50 caracteres --> const truncatedTxt = truncateTxt(textAndHref.text); 
-  textAndHref.forEach(link => console.log(link.file, link.text, link.href));
+ });
+
+  textAndHref.forEach(link => {
+    console.log(link.file, link.text, link.href);
+    checkStatus(link.href);
+  })
   //return textAndHref;
 
 }
