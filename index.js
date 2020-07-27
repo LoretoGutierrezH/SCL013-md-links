@@ -9,9 +9,7 @@ const { JSDOM } = jsdom;
 
 
 //4. Solicitud HTTP mediante axios
-
 const axios = require('axios');
-
 const checkStatus = (href) => {
   axios.get(href)
   .then(response => console.log(response.status, response.statusText))

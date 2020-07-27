@@ -7,6 +7,7 @@
     "test": "test"
   },
   "scripts": {
+    "md-links": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
