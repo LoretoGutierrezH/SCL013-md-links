@@ -1,6 +1,7 @@
 const colors = require('colors');
 const fs = require('fs');
 const md = require('markdown-it')();
+const fetch = require('node-fetch');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
@@ -22,8 +23,8 @@ const parseHtml = (dom, path) => {
   })
 
   console.log(linkObjects);
+  validateHref(linkObjects)
 }
-
 
 const readMD = (path) => {
   fs.readFile(path, (err, data) => {
@@ -42,8 +43,20 @@ const readMD = (path) => {
   })
 }
 
-/* file = {};
-file.readMD = readMD; */
+const validateHref = (links) => { 
+  links.map(element => {
+    fetch(element.href)
+      .then(response => {
+        if (response.status === 200) {
+          console.log('Link: ' + element.href +  'Estado ' + colors.green(response.status));
+        } else {
+          console.log(`Link: ${element.href} Estado ${response.status}`);
+        }
+      })
+      .catch(error =>
+        console.log('Link con error: ' + element.href))
+  });
+};
 
 
 module.exports = {
