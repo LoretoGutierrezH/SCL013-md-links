@@ -7,4 +7,3 @@ const filePath = arguments[2];
 
 
 file.readMD(filePath);
-

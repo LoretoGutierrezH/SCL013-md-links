@@ -6,18 +6,26 @@ const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
 
+// Función para limitar texto a 50 caracteres
+const truncateTo50 = (text) => {
+  if (text.length > 50) {
+    const text50 = text.slice(0, 50);
+    return text50;
+  } else {
+    return text;
+  }
+}
+
 const parseHtml = (dom, path, options) => {
   const anchors = dom.window.document.querySelectorAll('a');
   const anchorsArray = Array.from(anchors);
 
   const filteredAnchors = anchorsArray.filter(a => a.href.includes('http'));
 
-  //2. Limitar a 50 caracteres el text
-  //3. --validate: petición http para evaluar código de estado de las url (200, 301, 404)
-  //4. Options --state: función para generar estadísticas
+ 
   const linkObjects = filteredAnchors.map(a => {
     return {
-      text: a.innerHTML, //limitado a 50 caracteres
+      text: truncateTo50(a.innerHTML), //limitado a 50 caracteres
       href: a.href,
       file: path
     }
