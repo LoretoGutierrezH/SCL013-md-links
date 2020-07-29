@@ -8,10 +8,8 @@ const asciiTable = require('ascii-table');
 
 let table = new asciiTable('Información de los links del archivo md');
 table
-  .setHeading('Archivo', 'Texto', 'URL')
-  .addRow('./README.md', 'Un link a un sitio web', 'www.unsitioweb.com')
+  .setHeading('Texto', 'URL')
 
-//console.log(table.toString()); 
 
 
 // Función para limitar texto a 50 caracteres
@@ -24,34 +22,44 @@ const truncateTo50 = (text) => {
   }
 }
 
-
+// Promesa de lectura de ruta archivo md y options
 const readMD = (path, options = {validate: false, stats: false}) => {
-  fs.readFile(path, (err, data) => {
-    if (err) {
-      console.log(err)
-    }
-    console.log('Archivo leído'.green);
-    const html = md.render(data.toString());
-    const DOM = new JSDOM(html);
-    parseHtml(DOM, path, options);
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, (err, data) => {
+       if (err) {
+         reject(err);
+       } else {
+         resolve(data)
+       }
+    })
   })
+  .then(data => {
+     console.log('Archivo leído'.green);
+     const html = md.render(data.toString());
+     const DOM = new JSDOM(html);
+     parseHtml(DOM, path, options);
+  })
+  .catch(err => console.log(err))
 }
 
+
+// Función de validación de links 
 const validateHref = (links) => { 
   links.map(element => {
     fetch(element.href)
       .then(response => {
         if (response.status === 200) {
-          console.log('Link: ' + element.href +  ' Estado ' + colors.green(response.status));
+          console.log(colors.cyan('Link: ') + element.href +  ' Estado ' + colors.green(response.status));
         } else {
           console.log(`Link: ${element.href} Estado ${response.status}`);
         }
       })
       .catch(error =>
-        console.log('Link con error: ' + element.href))
+        console.log(colors.red('Link con error: ') + element.href))
   });
 };
 
+// Función para mostrar estadísticas de los links
 const urlStats = (links) => {
   const href = links.map(link => link.href)
   let resultMd = md.render(href.toString());
@@ -65,6 +73,7 @@ const urlStats = (links) => {
   console.log(colors.yellow('Total Links: ' + totalLinks)); 
 };
 
+// Función que se ejecuta después de leer el archivo md, retorna array de objetos (links)y valida o genera estadísticas según las opciones especificadas al inicio  
 const parseHtml = (dom, path, options) => {
   const anchors = dom.window.document.querySelectorAll('a');
   const anchorsArray = Array.from(anchors);
@@ -80,18 +89,26 @@ const parseHtml = (dom, path, options) => {
   })
 
   if (options.validate === true && options.stats === true) {
-    console.log('Validación + Estadísticas');
+    validateHref(linkObjects); //ideal convertir en promesa para determinar orden
+    urlStats(linkObjects); //ideal convertir en promesa
   } else if (options.validate === true) {
     validateHref(linkObjects);
   } else if (options.stats === true) {
     urlStats(linkObjects)
   } else {
-    console.log('Solo se muestra la información de cada link');
-    linkObjects.forEach(link => console.log(`${colors.cyan(link.text)} ${link.href}`));
+   
+    linkObjects.forEach(link => {
+      /* table
+      .addRow(`${link.text}`, `${link.href}`)
+      .setAlign(1, 'CENTER')
+      console.log(table.toString()); */
+      console.log(`${colors.cyan(link.text)} ${link.href}`);
+    })
   }
 }
 
-const mdLinks = (path, arguments) => {
+// Punto de entrada mediante la CLI
+const mdLinks = (path, arguments = []) => {
   if ((arguments.includes('--stats') && arguments.includes('--validate')) || arguments.includes('-s') && arguments.includes('-v')) {
     readMD(path, {
       validate: true,
