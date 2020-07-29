@@ -5,7 +5,8 @@ const fetch = require('node-fetch');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
-const parseHtml = (dom, path) => {
+
+const parseHtml = (dom, path, options) => {
   const anchors = dom.window.document.querySelectorAll('a');
   const anchorsArray = Array.from(anchors);
 
@@ -22,11 +23,22 @@ const parseHtml = (dom, path) => {
     }
   })
 
-  console.log(linkObjects);
-  validateHref(linkObjects)
+  
+  if (options.validate === true && options.stats === true) {
+    console.log('Validación + Estadísticas');
+  } else if (options.validate === true) {
+    validateHref(linkObjects);
+  } else if (options.stats === true) {
+    console.log('Se ejecuta la función de estadística');
+  } else {
+    console.log('Solo se muestra la información de cada link');
+    linkObjects.forEach(link => console.log(`${colors.cyan(link.text)} ${link.href}`));
+  }
+ 
 }
 
-const readMD = (path) => {
+const readMD = (path, options = {validate: false, stats: false}) => {
+  //console.log(options.validate);
   fs.readFile(path, (err, data) => {
     if (err) {
       console.log(err)
@@ -34,12 +46,7 @@ const readMD = (path) => {
     console.log('Archivo leído'.green);
     const html = md.render(data.toString());
     const DOM = new JSDOM(html);
-    parseHtml(DOM, path);
-    //console.log(html);
-    //console.log(DOM);
-
-    /* console.log(data.toString());
-    return data; */
+    parseHtml(DOM, path, options);
   })
 }
 
@@ -48,7 +55,7 @@ const validateHref = (links) => {
     fetch(element.href)
       .then(response => {
         if (response.status === 200) {
-          console.log('Link: ' + element.href +  'Estado ' + colors.green(response.status));
+          console.log('Link: ' + element.href +  ' Estado ' + colors.green(response.status));
         } else {
           console.log(`Link: ${element.href} Estado ${response.status}`);
         }
