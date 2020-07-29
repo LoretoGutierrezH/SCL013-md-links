@@ -10,7 +10,7 @@ table
   .setHeading('Archivo', 'Texto', 'URL')
   .addRow('./README.md', 'Un link a un sitio web', 'www.unsitioweb.com')
 
-console.log(table.toString());
+console.log(table.toString());  
 
 //ejemplo de uso --> let result = md.render('lo que quiero transformar en html');
 //console.log(result);
