@@ -4,6 +4,14 @@ const md = require('markdown-it')();
 const fetch = require('node-fetch');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
+const asciiTable = require('ascii-table');
+
+let table = new asciiTable('Información de los links del archivo md');
+table
+  .setHeading('Archivo', 'Texto', 'URL')
+  .addRow('./README.md', 'Un link a un sitio web', 'www.unsitioweb.com')
+
+//console.log(table.toString()); 
 
 
 // Función para limitar texto a 50 caracteres
@@ -16,37 +24,8 @@ const truncateTo50 = (text) => {
   }
 }
 
-const parseHtml = (dom, path, options) => {
-  const anchors = dom.window.document.querySelectorAll('a');
-  const anchorsArray = Array.from(anchors);
-
-  const filteredAnchors = anchorsArray.filter(a => a.href.includes('http'));
-
- 
-  const linkObjects = filteredAnchors.map(a => {
-    return {
-      text: truncateTo50(a.innerHTML), //limitado a 50 caracteres
-      href: a.href,
-      file: path
-    }
-  })
-
-  
-  if (options.validate === true && options.stats === true) {
-    console.log('Validación + Estadísticas');
-  } else if (options.validate === true) {
-    validateHref(linkObjects);
-  } else if (options.stats === true) {
-    console.log('Se ejecuta la función de estadística');
-  } else {
-    console.log('Solo se muestra la información de cada link');
-    linkObjects.forEach(link => console.log(`${colors.cyan(link.text)} ${link.href}`));
-  }
- 
-}
 
 const readMD = (path, options = {validate: false, stats: false}) => {
-  //console.log(options.validate);
   fs.readFile(path, (err, data) => {
     if (err) {
       console.log(err)
@@ -73,8 +52,44 @@ const validateHref = (links) => {
   });
 };
 
+const urlStats = (links) => {
+  const href = links.map(link => link.href)
+  let resultMd = md.render(href.toString());
+  let link = resultMd.split(',');
+  let totalLinks = 0; 
+   link.forEach(element => {
+    if (element.includes('http')) {
+      totalLinks = totalLinks + 1;
+    }
+  });
+  console.log(colors.yellow('Total Links: ' + totalLinks)); 
+};
 
+const parseHtml = (dom, path, options) => {
+  const anchors = dom.window.document.querySelectorAll('a');
+  const anchorsArray = Array.from(anchors);
 
+  const filteredAnchors = anchorsArray.filter(a => a.href.includes('http'));
+ 
+  const linkObjects = filteredAnchors.map(a => {
+    return {
+      text: truncateTo50(a.innerHTML), //limitado a 50 caracteres
+      href: a.href,
+      file: path
+    }
+  })
+
+  if (options.validate === true && options.stats === true) {
+    console.log('Validación + Estadísticas');
+  } else if (options.validate === true) {
+    validateHref(linkObjects);
+  } else if (options.stats === true) {
+    urlStats(linkObjects)
+  } else {
+    console.log('Solo se muestra la información de cada link');
+    linkObjects.forEach(link => console.log(`${colors.cyan(link.text)} ${link.href}`));
+  }
+}
 
 const mdLinks = (path, arguments) => {
   if ((arguments.includes('--stats') && arguments.includes('--validate')) || arguments.includes('-s') && arguments.includes('-v')) {

@@ -25,6 +25,7 @@
   "homepage": "https://github.com/LoretoGutierrezH/SCL013-md-links#readme",
   "dependencies": {
     "@adonisjs/ace": "^5.0.8",
+    "ascii-table": "0.0.9",
     "colors": "^1.4.0",
     "commander": "^6.0.0",
     "fetch": "^1.1.0",
