@@ -3,6 +3,14 @@ const fs = require('fs');
 const md = require('markdown-it')();
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
+const asciiTable = require('ascii-table');
+
+let table = new asciiTable('Información de los links del archivo md');
+table
+  .setHeading('Archivo', 'Texto', 'URL')
+  .addRow('./README.md', 'Un link a un sitio web', 'www.unsitioweb.com')
+
+console.log(table.toString());
 
 //ejemplo de uso --> let result = md.render('lo que quiero transformar en html');
 //console.log(result);
