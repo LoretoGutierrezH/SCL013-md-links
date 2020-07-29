@@ -74,6 +74,28 @@ const validateHref = (links) => {
 };
 
 
+
+
+const mdLinks = (path, arguments) => {
+  if ((arguments.includes('--stats') && arguments.includes('--validate')) || arguments.includes('-s') && arguments.includes('-v')) {
+    readMD(path, {
+      validate: true,
+      stats: true
+    });
+  } else if (arguments.includes('--stats') || arguments.includes('-s')) {
+    readMD(path, {
+      stats: true
+    });
+  } else if (arguments.includes('--validate') || arguments.includes('-v')) {
+    readMD(path, {
+      validate: true
+    });
+  } else {
+    readMD(path);
+  }
+}
+
 module.exports = {
-  readMD: readMD
+  readMD: readMD,
+  mdLinks: mdLinks
 }
