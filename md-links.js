@@ -2,7 +2,7 @@ const colors = require('colors');
 const fs = require('fs');
 const md = require('markdown-it')();
 const fetch = require('node-fetch');
-const jsdom = require('jsdom');
+const jsdom = require('jsdom'); 
 const { EEXIST } = require('constants');
 const { JSDOM } = jsdom;
 //const axios = require('axios');
@@ -41,7 +41,9 @@ const readMD = (path, options={validate: false, stats: false}) => {
     return parseHtml(DOM, path, options);
   })
   .then((links) => {
-    if (options.validate === true) {
+    if (options.validate === true && options.stats === true) {
+      return('HACIENDO ALGO');
+    } else if (options.validate === true) {
       return validateHref(links)
     } else if (options.stats === true) {
       return urlStats(links);
@@ -75,7 +77,7 @@ const validateHref = (links) => {
           })
         )
       })
-      resolve(Promise.all(validated));
+      resolve(Promise.all(validated)); //equivale a los resultados de todas las promesas
     })
     
     
