@@ -1,4 +1,4 @@
-const indexFunctions = require('./md-links');
+const indexFunctions = require('./cli');
 const [, , ...arguments] = process.argv;
 
 //console.log(arguments[2], arguments[3]);
