@@ -62,7 +62,9 @@ const urlStats = (links) => {
       totalLinks = totalLinks + 1;
     }
   });
+  const uniqueLinks = [...new Set(links.map((link) => link.href))].length;
   console.log(colors.yellow('Total Links: ' + totalLinks)); 
+  console.log(colors.red('Unique: ' + uniqueLinks)); 
 };
 
 const parseHtml = (dom, path, options) => {
