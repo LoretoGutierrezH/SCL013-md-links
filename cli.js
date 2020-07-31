@@ -4,8 +4,8 @@ const md = require('markdown-it')();
 const fetch = require('node-fetch');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
+const  Table  = require ('cli-table') ; 
 /* const asciiTable = require('ascii-table');
-
 let table = new asciiTable('Información de los links del archivo md');
 table
   .setHeading('Texto', 'URL') */
@@ -32,9 +32,9 @@ const mdLinks = (path, arguments = []) => {
 }
 
 // Función para limitar texto a 50 caracteres
-const truncateTo50 = (text) => {
-  if (text.length > 50) {
-    const text50 = text.slice(0, 50);
+const truncateTo40 = (text) => {
+  if (text.length > 40) {
+    const text50 = text.slice(0, 40);
     return text50;
   } else {
     return text;
@@ -70,7 +70,7 @@ const parseHtml = (dom, path, options) => {
 
   const linkObjects = filteredAnchors.map(a => {
     return {
-      text: truncateTo50(a.innerHTML), //limitado a 50 caracteres
+      text: truncateTo40(a.innerHTML), //limitado a 40 caracteres
       href: a.href,
       file: path
     }
@@ -85,17 +85,24 @@ const parseHtml = (dom, path, options) => {
     urlStats(linkObjects)
   } else {
 
+// instantiate
+  const table = new Table({
+  head: [colors.green('TEXTO'), colors.green('LINK')] , colWidths: [50, 75] 
+});
+
     linkObjects.forEach(link => {
+      table.push(
+        [colors.cyan(link.text), link.href]
+    );
       /* table
       .addRow(`${link.text}`, `${link.href}`)
       .setAlign(1, 'CENTER')
       console.log(table.toString()); */
-      console.log(`${colors.cyan(link.text)} ${link.href}`);
+      //console.log(`${colors.cyan(link.text)} ${link.href}`);
     })
+    console.log(table.toString())
   }
 }
-
-
 
 //4a. Validación
 const validateHref = (links) => { 
@@ -105,11 +112,11 @@ const validateHref = (links) => {
         if (response.status === 200) {
             console.log(colors.cyan('Link: ') + element.href +  ' Estado ' + colors.green(response.status));
         } else {
-          console.log(`Link: ${element.href} Estado ${response.status}`);
+          console.log(`Link: ${element.href} Estado ${response.status}`);//404
         }
       })
       .catch(error =>
-        console.log(colors.red('Link con error: ') + element.href))
+        console.log(colors.red('Link con error: ') + element.href))//link no valido
   });
 };
 
@@ -125,6 +132,7 @@ const urlStats = (links) => {
     }
   });
   const uniqueLinks = [...new Set(links.map((link) => link.href))].length;
+  //aqui va la funcion broquen y agregar table
   console.log(colors.yellow('Total Links: ' + totalLinks));
   console.log(colors.red('Unique: ' + uniqueLinks));
 };
