@@ -42,7 +42,7 @@ const readMD = (path, options={validate: false, stats: false}) => {
   })
   .then((links) => {
     if (options.validate === true && options.stats === true) {
-      return('HACIENDO ALGO');
+      return validateHref(links), urlStats(links)//ver ejecucion de dos promesas
     } else if (options.validate === true) {
       return validateHref(links)
     } else if (options.stats === true) {
