@@ -126,7 +126,6 @@ const validateHref = (links) => {
   const table = new Table({
   head: [colors.green('LINK'), colors.green('STATUS')] , colWidths: [100, 20] 
   });
-
   res.forEach(link => {
   table.push(
       [colors.cyan(link.href), link.status]
@@ -135,6 +134,10 @@ const validateHref = (links) => {
    console.log(table.toString())
   })
 };  
+
+
+   
+
 
 //4b. Estadísticas
 const urlStats = (links) => {
