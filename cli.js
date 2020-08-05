@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const  Table  = require ('cli-table') ; 
-const logSymbols = require('log-symbols');
+//const logSymbols = require('log-symbols');
 
 //1. Función de entrada
 const mdLinks = (path, arguments = []) => {
@@ -27,7 +27,7 @@ const mdLinks = (path, arguments = []) => {
   }
 }
 
-// Función para limitar texto a 50 caracteres
+// Función para limitar texto a 40 caracteres
 const truncateTo40 = (text) => {
   if (text.length > 40) {
     const text40 = text.slice(0, 40);
@@ -49,7 +49,6 @@ const readMD = (path, options = {validate: false, stats: false}) => {
     })
   })
   .then(data => {
-     //console.log('Archivo leído'.green);
      const html = md.render(data.toString());
      const DOM = new JSDOM(html);
      parseHtml(DOM, path, options);
@@ -58,7 +57,7 @@ const readMD = (path, options = {validate: false, stats: false}) => {
 }
 
 //3. Mostrar links
-const parseHtml = (dom, path, options) => {
+  const parseHtml = (dom, path, options) => {
   const anchors = dom.window.document.querySelectorAll('a');
   const anchorsArray = Array.from(anchors);
 
@@ -73,19 +72,17 @@ const parseHtml = (dom, path, options) => {
   })
 
   if (options.validate === true && options.stats === true) {
-    urlStats(linkObjects);
-    validateStats(linkObjects)
-    setTimeout(() => validateHref(linkObjects),4000) ;
-  } else if (options.validate === true) {
-    validateHref(linkObjects);
-  } else if (options.stats === true) {
-    urlStats(linkObjects)
-  } else {
+      validateStats(linkObjects)
+    } else if (options.validate === true) {
+      validateHref(linkObjects);
+    } else if (options.stats === true) {
+      urlStats(linkObjects)
+    } else {
 
 // instantiate
   const table = new Table({
   head: [colors.green('TEXTO'), colors.green('LINK')] , colWidths: [50, 75] 
-});
+  });
 
     linkObjects.forEach(link => {
       table.push(
@@ -97,67 +94,50 @@ const parseHtml = (dom, path, options) => {
 }
 
 //4a. Validación
-
-/* const validateHref = (links) => {
-
-  links.map(element => {
-    fetch(element.href)
+const validateHref = (links) => {
+  return new Promise((resolve, reject) => {
+  let allLinks = [];
+  links.forEach(element => {
+    allLinks.push(fetch(element.href)
       .then(response => {
         if (response.status === 200) {
-          console.log(colors.cyan(logSymbols.success,'Link: ') + element.href +  ' Estado ' + colors.green(response.status));
+          return {
+            ...element,
+            status: (colors.green('√ Ok ') + response.status)
+          }
         } else if(response.status === 404){
-          console.log(logSymbols.error`Link: ${element.href} Estado ${response.status}`);//404
+          return {
+            ...element,
+            status: (colors.red('✖ Fail ') + response.status)
+          }
         } 
       })
       .catch((err) => {
-       console.log(colors.red(logSymbols.error,'Link con error: ') + element.href)
-      })//link no valido
-      
+        return {
+          ...element,
+          status: (colors.yellow('⚠ Link no válido '))
+        }
+      })
+    )
   }); 
+  resolve(Promise.all(allLinks))
+})
+  .then(res =>{
+  const table = new Table({
+  head: [colors.green('LINK'), colors.green('STATUS')] , colWidths: [100, 20] 
+  });
+  res.forEach(link => {
+  table.push(
+      [colors.cyan(link.href), link.status]
+    );
+  }) 
+   console.log(table.toString())
+  })
+};  
 
-};  */ 
 
-const validateHref = (links) => {
-  return new Promise((resolve, reject) => {
-      let allLinks = [];
-      links.forEach(element => {
-        allLinks.push(fetch(element.href)
-          .then(response => {
-            if (response.status === 200) {
-              console.log(colors.cyan(logSymbols.success, 'Link: ') + element.href + ' Estado ' + colors.green(response.status));
-            } else if (response.status === 404) {
-              console.log(logSymbols.error `Link: ${element.href} Estado ${response.status}`); //404
-            }
-          })
-          .catch((err) => {
-            console.log(colors.red(logSymbols.error, 'Link con error: ') + element.href)
-          }) //link no valido
-        )
-      });
-      resolve(Promise.all(allLinks))
-    })
-    .then(res => {
-      console.log('res', res)
-      // instantiate
-      const table = new Table({
-        head: [colors.green('LINK'), colors.green('STATUS')],
-        colWidths: [50, 75]
-      });
-      /*     res.forEach(link => {
-            table.push(
-              [colors.cyan(link.href), link.status]
-          );
-          }) */
-      // console.log(table.toString())
-      /*     const broken = res.filter(link => link.status !=200 )
-          let tableBroken = new Table();
-          tableBroken.push(
-            { 'Broken     ': broken.length }
-        );
-        process.stdout.write(tableBroken.toString());
-          //console.log('Broken: ', broken.length) */
-    })
-};
+   
+
 
 //4b. Estadísticas
 const urlStats = (links) => {
@@ -173,21 +153,12 @@ const urlStats = (links) => {
   const uniqueLinks = [...new Set(links.map((link) => link.href))].length;
   
   let tableStats = new Table();
-  tableStats.push(
-      { 'Total Links': totalLinks },
-      { 'Unique': uniqueLinks}
-  );
-  console.log('ʕ•͡ᴥ•ʔ')
-  console.log(tableStats.toString());
-   
- 
-  /* const table = new Table({
-    head: [colors.cyan('Total Links'), colors.cyan('Unique')] , colWidths: [20, 20] 
-  });
-    table.push([totalLinks, uniqueLinks]);
-    console.log(table.toString()) */
-  /* console.log(colors.yellow('Total Links: ' + totalLinks));
-  console.log(colors.red('Unique: ' + uniqueLinks)); */
+  tableStats.push(totalLinks,uniqueLinks);
+  let total = 'Total Links: ' + tableStats[0];
+  let unique = 'Unique: ' + tableStats[1];
+  //let colorsTable = tableStats.map(e => colors.cyan(e))
+  console.log(total,'\n',unique);
+  //console.log(tableStats.toString());
 };
 
 //funcion Broken
@@ -217,9 +188,12 @@ const validateStats = links => {
     tableBroken.push(
       { 'Broken     ': broken.length }
   );
-  process.stdout.write(tableBroken.toString());
-    //console.log('Broken: ', broken.length)
+    urlStats(links)
+    process.stdout.write(tableBroken.toString());
+    console.log('\n')
+    validateHref(links)
   })
+
 }
  
 module.exports = {
