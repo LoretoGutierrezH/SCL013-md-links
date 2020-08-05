@@ -5,11 +5,7 @@ const fetch = require('node-fetch');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const  Table  = require ('cli-table') ; 
-/* const asciiTable = require('ascii-table');
-let table = new asciiTable('Información de los links del archivo md');
-table
-  .setHeading('Texto', 'URL') */
-
+const logSymbols = require('log-symbols');
 
 //1. Función de entrada
 const mdLinks = (path, arguments = []) => {
@@ -34,8 +30,8 @@ const mdLinks = (path, arguments = []) => {
 // Función para limitar texto a 50 caracteres
 const truncateTo40 = (text) => {
   if (text.length > 40) {
-    const text50 = text.slice(0, 40);
-    return text50;
+    const text40 = text.slice(0, 40);
+    return text40;
   } else {
     return text;
   }
@@ -53,7 +49,7 @@ const readMD = (path, options = {validate: false, stats: false}) => {
     })
   })
   .then(data => {
-     console.log('Archivo leído'.green);
+     //console.log('Archivo leído'.green);
      const html = md.render(data.toString());
      const DOM = new JSDOM(html);
      parseHtml(DOM, path, options);
@@ -77,8 +73,9 @@ const parseHtml = (dom, path, options) => {
   })
 
   if (options.validate === true && options.stats === true) {
-    validateHref(linkObjects);
     urlStats(linkObjects);
+    validateStats(linkObjects)
+    setTimeout(() => validateHref(linkObjects),4000) ;
   } else if (options.validate === true) {
     validateHref(linkObjects);
   } else if (options.stats === true) {
@@ -94,31 +91,31 @@ const parseHtml = (dom, path, options) => {
       table.push(
         [colors.cyan(link.text), link.href]
     );
-      /* table
-      .addRow(`${link.text}`, `${link.href}`)
-      .setAlign(1, 'CENTER')
-      console.log(table.toString()); */
-      //console.log(`${colors.cyan(link.text)} ${link.href}`);
     })
     console.log(table.toString())
   }
 }
 
 //4a. Validación
-const validateHref = (links) => { 
+
+const validateHref = (links) => {
+
   links.map(element => {
     fetch(element.href)
       .then(response => {
         if (response.status === 200) {
-            console.log(colors.cyan('Link: ') + element.href +  ' Estado ' + colors.green(response.status));
-        } else {
-          console.log(`Link: ${element.href} Estado ${response.status}`);//404
-        }
+          console.log(colors.cyan(logSymbols.success,'Link: ') + element.href +  ' Estado ' + colors.green(response.status));
+        } else if(response.status === 404){
+          console.log(logSymbols.error`Link: ${element.href} Estado ${response.status}`);//404
+        } 
       })
-      .catch(error =>
-        console.log(colors.red('Link con error: ') + element.href))//link no valido
-  });
-};
+      .catch((err) => {
+       console.log(colors.red(logSymbols.error,'Link con error: ') + element.href)
+      })//link no valido
+      
+  }); 
+
+};  
 
 //4b. Estadísticas
 const urlStats = (links) => {
@@ -132,14 +129,57 @@ const urlStats = (links) => {
     }
   });
   const uniqueLinks = [...new Set(links.map((link) => link.href))].length;
-  //aqui va la funcion broquen y agregar table
-  console.log(colors.yellow('Total Links: ' + totalLinks));
-  console.log(colors.red('Unique: ' + uniqueLinks));
+  
+  let tableStats = new Table();
+  tableStats.push(
+      { 'Total Links': totalLinks },
+      { 'Unique': uniqueLinks}
+  );
+  console.log('ʕ•͡ᴥ•ʔ')
+  console.log(tableStats.toString());
+   
+ 
+  /* const table = new Table({
+    head: [colors.cyan('Total Links'), colors.cyan('Unique')] , colWidths: [20, 20] 
+  });
+    table.push([totalLinks, uniqueLinks]);
+    console.log(table.toString()) */
+  /* console.log(colors.yellow('Total Links: ' + totalLinks));
+  console.log(colors.red('Unique: ' + uniqueLinks)); */
 };
 
-
-
-
+//funcion Broken
+const validateStats = links => {
+  return new Promise((resolve, reject) => {
+	let allLinks = [];
+	let broken = 0;
+	links.forEach((link) => { allLinks.push(fetch(link.href)
+    .then(response => {
+      return {
+        ...link,
+        status: response.status
+      }
+    })
+    .catch((error) => {
+        return {
+          ...link,
+          status: `Fail 404, ${error.message}`
+        }
+    })); 
+ })
+    resolve(Promise.all(allLinks))
+  })
+  .then(res =>{
+    const broken = res.filter(link => link.status !=200 )
+    let tableBroken = new Table();
+    tableBroken.push(
+      { 'Broken     ': broken.length }
+  );
+  process.stdout.write(tableBroken.toString());
+    //console.log('Broken: ', broken.length)
+  })
+}
+ 
 module.exports = {
   readMD: readMD,
   mdLinks: mdLinks
