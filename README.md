@@ -1,6 +1,68 @@
-# Markdown Links
+# Markdown Links Hunter
 
-## Índice
+Markdown Links Hunter es una librería que ayuda a los desarrolladores a analizar los enlaces existentes en un archivo con extensión ".md". La libreria incluye tanto una CLI para su uso en la terminal como una API que puedes utilizar desde cualquier archivo Javascript de la carpeta de tu proyecto.
+
+## 1. Instalación
+
+Para instalar Markdown Links Hunter debes ejecutar el siguiente comando en la terminal de tu sistema operativo:
+
+`npm install md-links-hunter`
+
+## 2. Uso
+
+### 2.1 CLI
+
+`node md-links-hunter.js <ruta-de-archivo-md>`
+De forma predeterminada, Markdown Links Hunter recibe un único archivo .md, el cual analiza en busca de enlaces a sitios web externos. El resultado consiste en una lista de URLs y el texto asociado a cada uno:
+
+![Md Links Hunter default](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
+
+`node md-links-hunter.js <ruta-de-archivo-md> --validate` o `-v`
+Al espeficar este flag, Markdown Links Hunterrealizará tanto el análisis básico como la validación de las URLs para conocer su código de estado (Ok 200, Fail 404, Warning para URLs no válidas) y mostrará la información de la siguiente manera:
+
+![Md Links Hunter validate](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
+
+`node md-links-hunter.js <ruta-de-archivo-md> --stats` o `-s`
+Al espeficar este flag, Markdown Links Hunter realizará el análisis básico y mostrará información estadística sobre las URLs existentes en el archivo .md y mostrará la información de la siguiente manera:
+
+![Md Links Hunter stats](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
+
+
+`node md-links-hunter.js <ruta-de-archivo-md> --stats` o `-s`
+Al espeficar ambos flags, Markdown Links Hunter realizará el análisis básico, validará las URLs y mostrará información estadística sobre ellas. El resultado se verá de la siguiente manera:
+
+![Md Links Hunter validate y stats](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
+
+
+### 2.3 API de Javascript
+
+Para utilizar la API de Markdown Links Hunter debes importar el módulo principal copiando y pegando la siguiente línea en el archivo javascript en el que quiera utilizarla:
+
+`const mdLinks = require('md-links')`
+
+Luego, podrás utilizar el módulo de la siguiente manera:
+
+`mdLinks(<ruta-de-archivo-md>, *<opciones>)`
+
+*`<opciones>` equivale a un objeto, el que puede contener las siguientes propiedades:
+ Solo validación: { validate: true }
+ Solo estadísticas: { stats: true }
+ Tanto validación como estadísticas: { validate: true, stats: true } 
+
+ Para ejecutar un análisis básico, solo especifica la ruta
+
+![Md Links Hunter API](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
+
+## 3. Librerias utilizadas en el proyecto
+
+* [MarkdownIt]()
+* [JSDOM]()
+* [Node-Fetch]()
+* [Cli-Table]()
+* [Colors]()
+* [P-Queue]()
+
+
 
 * [1. Preámbulo](#1-preámbulo)
 * [2. Resumen del proyecto](#2-resumen-del-proyecto)

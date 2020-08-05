@@ -98,7 +98,7 @@ const parseHtml = (dom, path, options) => {
 
 //4a. Validación
 
-const validateHref = (links) => {
+/* const validateHref = (links) => {
 
   links.map(element => {
     fetch(element.href)
@@ -115,7 +115,49 @@ const validateHref = (links) => {
       
   }); 
 
-};  
+};  */ 
+
+const validateHref = (links) => {
+  return new Promise((resolve, reject) => {
+      let allLinks = [];
+      links.forEach(element => {
+        allLinks.push(fetch(element.href)
+          .then(response => {
+            if (response.status === 200) {
+              console.log(colors.cyan(logSymbols.success, 'Link: ') + element.href + ' Estado ' + colors.green(response.status));
+            } else if (response.status === 404) {
+              console.log(logSymbols.error `Link: ${element.href} Estado ${response.status}`); //404
+            }
+          })
+          .catch((err) => {
+            console.log(colors.red(logSymbols.error, 'Link con error: ') + element.href)
+          }) //link no valido
+        )
+      });
+      resolve(Promise.all(allLinks))
+    })
+    .then(res => {
+      console.log('res', res)
+      // instantiate
+      const table = new Table({
+        head: [colors.green('LINK'), colors.green('STATUS')],
+        colWidths: [50, 75]
+      });
+      /*     res.forEach(link => {
+            table.push(
+              [colors.cyan(link.href), link.status]
+          );
+          }) */
+      // console.log(table.toString())
+      /*     const broken = res.filter(link => link.status !=200 )
+          let tableBroken = new Table();
+          tableBroken.push(
+            { 'Broken     ': broken.length }
+        );
+        process.stdout.write(tableBroken.toString());
+          //console.log('Broken: ', broken.length) */
+    })
+};
 
 //4b. Estadísticas
 const urlStats = (links) => {
