@@ -62,7 +62,9 @@ const readMD = (path, options={validate: false, stats: false}) => {
       ];
       
       queue.addAll(myPromises).then(responses => {
-      responses.map(response => console.log(response));
+        responses.map(response => {
+        return console.log(response)
+        }); 
       }); 
 
     } else if (options.validate === true) {
