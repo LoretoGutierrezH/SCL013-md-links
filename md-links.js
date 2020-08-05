@@ -6,25 +6,20 @@ const jsdom = require('jsdom');
 const { EEXIST } = require('constants');
 const { JSDOM } = jsdom;
 //const axios = require('axios');
+const PQueue = require('p-queue');
+
+
 const { resolve } = require('path');
-/* const asciiTable = require('ascii-table');
-
-let table = new asciiTable('Información de los links del archivo md');
-table
-  .setHeading('Texto', 'URL')
- */
-
 
 // Función para limitar texto a 50 caracteres
-const truncateTo50 = (text) => {
-  if (text.length > 50) {
-    const text50 = text.slice(0, 50);
-    return text50;
+const truncateTo40 = (text) => {
+  if (text.length > 40) {
+    const text40 = text.slice(0, 40);
+    return text40;
   } else {
     return text;
   }
 }
-
 
 const readMD = (path, options={validate: false, stats: false}) => {
   return new Promise((resolve, reject) => {
@@ -42,7 +37,34 @@ const readMD = (path, options={validate: false, stats: false}) => {
   })
   .then((links) => {
     if (options.validate === true && options.stats === true) {
-      return validateHref(links), urlStats(links)//ver ejecucion de dos promesas
+     const queue = new PQueue({concurrency: 1});
+
+     /* queue.addAll(
+       () => urlStats(links),
+       () => validateStats(links),
+       () => validateHref(links))
+     .then(responses => {
+      responses.map(response => console.log(response));
+      }); */
+      const myPromises = [
+        () => new Promise((resolve) => setTimeout(() => {
+          resolve(validateStats(links));
+          //console.log('validateHref');
+        }, 1000)),
+        () => new Promise((resolve) => setTimeout(() => {
+          resolve(urlStats(links));
+          //console.log('urlStats');
+        }, 2000)),
+        () => new Promise((resolve) => setTimeout(() => {
+          resolve(validateHref(links));
+          //console.log('validaStats');
+        }, 10)),
+      ];
+      
+      queue.addAll(myPromises).then(responses => {
+      responses.map(response => console.log(response));
+      }); 
+
     } else if (options.validate === true) {
       return validateHref(links)
     } else if (options.stats === true) {
@@ -94,12 +116,38 @@ const urlStats = (links) => {
         totalLinks = totalLinks + 1;
       }
     });
+    const uniqueLinks = [...new Set(links.map((link) => link.href))].length;
     //console.log(colors.yellow('Total Links: ' + totalLinks));
-    resolve(colors.yellow(`Total links: ${totalLinks}`));
+    resolve(colors.yellow(`Total links: ${totalLinks}\nUnique: ${uniqueLinks}`));
   })
-  
+
 };
 
+const validateStats = links => {
+  return new Promise((resolve, reject) => {
+	let allLinks = [];
+	let broken = 0;
+	links.forEach((link) => { allLinks.push(fetch(link.href)
+    .then(response => {
+      return {
+        ...link,
+        status: response.status
+      }
+    })
+    .catch((error) => {
+        return {
+          ...link,
+          status: `Fail 404, ${error.message}`
+        }
+    })); 
+ })
+    resolve(Promise.all(allLinks))
+  })
+  .then(res =>{
+    const broken = res.filter(link => link.status !=200 )
+    console.log(colors.yellow('Broken: ', broken.length))
+  })
+}
 
 const parseHtml = (dom, path) => {
   return new Promise((resolve, reject) => {
@@ -109,7 +157,7 @@ const parseHtml = (dom, path) => {
 
     const linkObjects = filteredAnchors.map(a => {
       return {
-        text: truncateTo50(a.innerHTML), //limitado a 50 caracteres
+        text: truncateTo40(a.innerHTML), //limitado a 40 caracteres
         href: a.href,
         file: path
       }
@@ -119,7 +167,7 @@ const parseHtml = (dom, path) => {
 }
 
 
-const mdLinks = (path, arguments = []) => {
+/* const mdLinks = (path, arguments = []) => {
   if ((arguments.includes('--stats') && arguments.includes('--validate')) || arguments.includes('-s') && arguments.includes('-v')) {
     readMD(path, {
       validate: true,
@@ -137,8 +185,8 @@ const mdLinks = (path, arguments = []) => {
     readMD(path);
   }
 }
-
+ */
 module.exports = {
   readMD: readMD,
-  mdLinks: mdLinks
+ /*  mdLinks: mdLinks */
 }

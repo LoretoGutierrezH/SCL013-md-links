@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -29,8 +29,11 @@
     "colors": "^1.4.0",
     "commander": "^6.0.0",
     "fetch": "^1.1.0",
+    "jest": "^26.2.2",
     "jsdom": "^16.3.0",
+    "log-symbols": "^4.0.0",
     "markdown-it": "^11.0.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "p-queue": "^5.0.0"
   }
 }
