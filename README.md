@@ -13,22 +13,30 @@ Para instalar Markdown Links Hunter debes ejecutar el siguiente comando en la te
 ### 2.1 CLI
 
 `node md-links-hunter.js <ruta-de-archivo-md>`
+
+
 De forma predeterminada, Markdown Links Hunter recibe un único archivo .md, el cual analiza en busca de enlaces a sitios web externos. El resultado consiste en una lista de URLs y el texto asociado a cada uno:
 
 ![Md Links Hunter default](./assets/default-cli.png)
 
 `node md-links-hunter.js <ruta-de-archivo-md> --validate` o `-v`
-Al espeficar este flag, Markdown Links Hunterrealizará tanto el análisis básico como la validación de las URLs para conocer su código de estado (Ok 200, Fail 404, Warning para URLs no válidas) y mostrará la información de la siguiente manera:
+
+
+Al espeficar este flag, Markdown Links Hunter realizará tanto el análisis básico como la validación de las URLs para conocer su código de estado (Ok 200, Fail 404, Warning para URLs no válidas) y mostrará la información de la siguiente manera:
 
 ![Md Links Hunter validate](./assets/validate.png)
 
 `node md-links-hunter.js <ruta-de-archivo-md> --stats` o `-s`
+
+
 Al espeficar este flag, Markdown Links Hunter realizará el análisis básico y mostrará información estadística sobre las URLs existentes en el archivo .md y mostrará la información de la siguiente manera:
 
 ![Md Links Hunter stats]()
 
 
 `node md-links-hunter.js <ruta-de-archivo-md> --validate --stats` o `-v -s`
+
+
 Al espeficar ambos flags, Markdown Links Hunter realizará el análisis básico, validará las URLs y mostrará información estadística sobre ellas. El resultado se verá de la siguiente manera:
 
 ![Md Links Hunter validate y stats]()
@@ -44,16 +52,18 @@ Luego, podrás utilizar el módulo de la siguiente manera:
 
 `mdLinks(<ruta-de-archivo-md>, *<opciones>)`
 
-*`<opciones>` equivale a un objeto, el que puede contener las siguientes propiedades:
- * Solo validación: { validate: true }
+`<opciones>` equivale a un objeto, el que puede contener las siguientes propiedades:
+
+
+ * Solo validación:
 
  ![Md Links Hunter API validate](./assets/api-validate.png)
 
- * Solo estadísticas: { stats: true }
+ * Solo estadísticas:
 
  ![Md Links Hunter API stats](./assets/api-stats.png)
 
- * Tanto validación como estadísticas: { validate: true, stats: true } 
+ * Tanto validación como estadísticas:
 
  ![Md Links Hunter API validate+stats](./assets/api-validate+stats.png)
 
