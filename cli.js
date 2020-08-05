@@ -153,11 +153,13 @@ const urlStats = (links) => {
   const uniqueLinks = [...new Set(links.map((link) => link.href))].length;
   
   let tableStats = new Table();
-  tableStats.push(totalLinks,uniqueLinks);
-  let total = 'Total Links: ' + tableStats[0];
-  let unique = 'Unique: ' + tableStats[1];
+  tableStats.push({
+    'Total Links': totalLinks,
+    'Unique': uniqueLinks
+  });
+  
   //let colorsTable = tableStats.map(e => colors.cyan(e))
-  console.log(total,'\n',unique);
+  process.stdout.write(tableStats.toString());
   //console.log(tableStats.toString());
 };
 

@@ -15,7 +15,7 @@ Para instalar Markdown Links Hunter debes ejecutar el siguiente comando en la te
 `node md-links-hunter.js <ruta-de-archivo-md>`
 De forma predeterminada, Markdown Links Hunter recibe un único archivo .md, el cual analiza en busca de enlaces a sitios web externos. El resultado consiste en una lista de URLs y el texto asociado a cada uno:
 
-![Md Links Hunter default](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
+![Md Links Hunter default](./assets/default-cli.png)
 
 `node md-links-hunter.js <ruta-de-archivo-md> --validate` o `-v`
 Al espeficar este flag, Markdown Links Hunterrealizará tanto el análisis básico como la validación de las URLs para conocer su código de estado (Ok 200, Fail 404, Warning para URLs no válidas) y mostrará la información de la siguiente manera:
