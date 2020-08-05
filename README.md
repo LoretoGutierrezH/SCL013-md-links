@@ -20,18 +20,18 @@ De forma predeterminada, Markdown Links Hunter recibe un único archivo .md, el 
 `node md-links-hunter.js <ruta-de-archivo-md> --validate` o `-v`
 Al espeficar este flag, Markdown Links Hunterrealizará tanto el análisis básico como la validación de las URLs para conocer su código de estado (Ok 200, Fail 404, Warning para URLs no válidas) y mostrará la información de la siguiente manera:
 
-![Md Links Hunter validate](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
+![Md Links Hunter validate](./assets/validate.png)
 
 `node md-links-hunter.js <ruta-de-archivo-md> --stats` o `-s`
 Al espeficar este flag, Markdown Links Hunter realizará el análisis básico y mostrará información estadística sobre las URLs existentes en el archivo .md y mostrará la información de la siguiente manera:
 
-![Md Links Hunter stats](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
+![Md Links Hunter stats]()
 
 
-`node md-links-hunter.js <ruta-de-archivo-md> --stats` o `-s`
+`node md-links-hunter.js <ruta-de-archivo-md> --validate --stats` o `-v -s`
 Al espeficar ambos flags, Markdown Links Hunter realizará el análisis básico, validará las URLs y mostrará información estadística sobre ellas. El resultado se verá de la siguiente manera:
 
-![Md Links Hunter validate y stats](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
+![Md Links Hunter validate y stats]()
 
 
 ### 2.3 API de Javascript
@@ -45,22 +45,30 @@ Luego, podrás utilizar el módulo de la siguiente manera:
 `mdLinks(<ruta-de-archivo-md>, *<opciones>)`
 
 *`<opciones>` equivale a un objeto, el que puede contener las siguientes propiedades:
- Solo validación: { validate: true }
- Solo estadísticas: { stats: true }
- Tanto validación como estadísticas: { validate: true, stats: true } 
+ * Solo validación: { validate: true }
+
+ ![Md Links Hunter API validate](./assets/api-validate.png)
+
+ * Solo estadísticas: { stats: true }
+
+ ![Md Links Hunter API stats](./assets/api-stats.png)
+
+ * Tanto validación como estadísticas: { validate: true, stats: true } 
+
+ ![Md Links Hunter API validate+stats](./assets/api-validate+stats.png)
 
  Para ejecutar un análisis básico, solo especifica la ruta
 
-![Md Links Hunter API](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
+ * ![Md Links Hunter API default](./assets/api-default.png)
 
 ## 3. Librerias utilizadas en el proyecto
 
-* [MarkdownIt]()
-* [JSDOM]()
-* [Node-Fetch]()
-* [Cli-Table]()
-* [Colors]()
-* [P-Queue]()
+* [MarkdownIt](https://github.com/markdown-it/markdown-it)
+* [JSDOM](https://github.com/jsdom/jsdom)
+* [Node-Fetch](https://www.npmjs.com/package/node-fetch)
+* [Cli-Table](https://www.npmjs.com/package/cli-table)
+* [Colors](https://www.npmjs.com/package/colors)
+* [P-Queue](https://github.com/sindresorhus/p-queue)
 
 
 
