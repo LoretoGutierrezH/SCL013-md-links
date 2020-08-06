@@ -36,7 +36,7 @@ Al espeficar este flag, Markdown Links Hunter realizará tanto el análisis bás
 
 Al espeficar este flag, Markdown Links Hunter realizará el análisis básico y entregará información estadística sobre las URLs existentes en el archivo .md. El resultado se verá de la siguiente manera:
 
-![Md Links Hunter stats](./assets/cli-stats)
+![Md Links Hunter stats](./assets/cli-stats.png)
 
 
 `node md-links-hunter.js <ruta-de-archivo-md> --validate --stats` o `-v -s`
@@ -44,7 +44,7 @@ Al espeficar este flag, Markdown Links Hunter realizará el análisis básico y 
 
 Al espeficar ambos flags, Markdown Links Hunter realizará el análisis básico, validará las URLs y mostrará información estadística sobre ellas. El resultado se verá de la siguiente manera:
 
-![Md Links Hunter validate y stats](./assets/cli-stats+validate)
+![Md Links Hunter validate y stats](./assets/cli-stats+validate.png)
 
 
 ### 2.3 API de Javascript
