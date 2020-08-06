@@ -6,13 +6,17 @@ Markdown Links Hunter es una librería que ayuda a los desarrolladores a analiza
 
 Para instalar Markdown Links Hunter debes ejecutar el siguiente comando en la terminal:
 
-`npm install md-links-hunter`
+`npm install markdown-links-hunter`
+
+Luego, debes importar el módulo principal en el archivo javascript correspondiente:
+
+`const mdLinks = require('markdown-links-hunter')`
 
 ## 2. Uso
 
 ### 2.1. CLI
 
-`node md-links-hunter.js <ruta-de-archivo-md>`
+`node <archivo.js> <ruta-de-archivo-md>`
 
 
 De forma predeterminada, Markdown Links Hunter recibe un único archivo .md, el cual analiza en busca de enlaces a sitios web externos. El resultado consiste en una lista de URLs y el texto asociado a cada uno:
@@ -32,7 +36,7 @@ Al espeficar este flag, Markdown Links Hunter realizará tanto el análisis bás
 
 Al espeficar este flag, Markdown Links Hunter realizará el análisis básico y entregará información estadística sobre las URLs existentes en el archivo .md. El resultado se verá de la siguiente manera:
 
-![Md Links Hunter stats]()
+![Md Links Hunter stats](./assets/cli-stats)
 
 
 `node md-links-hunter.js <ruta-de-archivo-md> --validate --stats` o `-v -s`
@@ -40,16 +44,16 @@ Al espeficar este flag, Markdown Links Hunter realizará el análisis básico y 
 
 Al espeficar ambos flags, Markdown Links Hunter realizará el análisis básico, validará las URLs y mostrará información estadística sobre ellas. El resultado se verá de la siguiente manera:
 
-![Md Links Hunter validate y stats]()
+![Md Links Hunter validate y stats](./assets/cli-stats+validate)
 
 
 ### 2.3 API de Javascript
 
 Para utilizar la API de Markdown Links Hunter debes importar el módulo principal copiando y pegando la siguiente línea en el archivo javascript en el que quieras utilizarlo:
 
-`const mdLinks = require('md-links')`
+`const mdLinks = require('markdown-links-hunter')`
 
-Luego, podrás utilizar el módula de esta forma:
+Luego, podrás utilizar el módulo de esta forma:
 
 `mdLinks(<ruta-de-archivo-md>, *<opciones>)`
 
