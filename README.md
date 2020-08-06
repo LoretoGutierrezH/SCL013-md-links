@@ -95,10 +95,10 @@ Luego, podrás utilizar el módulo de la siguiente manera:
 ***
 
 ## 1. Preámbulo
-* [BADlink Acerca de Node.js - Documentación oficial](https://flexssssdsdsdsdsdsdboxfroggy.com/#es)
+* [BADlink Acerca de Node.js - Documentación oficial](https://flexssboxfroggy.com/#es)
 [BAD](https://imgur.com/notfound)
 [malito](https://es.wikipedia/wiki/Markdown)
-[301](http://www.example.org/index.asp)
+[exmple](http://www.example.org/index.asp)
 [Markdown](https://es.wikipedia.org/wiki/Markdown) es un lenguaje de marcado
 ligero muy popular entre developers. Es usado en muchísimas plataformas que
 manejan texto plano (GitHub, foros, blogs, ...), y es muy común
@@ -141,7 +141,7 @@ consideración en peculiaridades del lenguaje, convenciones y buenas prácticas.
 A continuación puedes ver los objetivos de aprendizaje de este proyecto:
 
 ### JavaScript
-
+[exmple](http://www.example.org/index.asp)
 * [ ] Uso de condicionales (if-else | switch | operador ternario)
 * [ ] Uso de funciones (parámetros | argumentos | valor de retorno)
 * [ ] Manipular arrays (filter | map | sort | reduce)
