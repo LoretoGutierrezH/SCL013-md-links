@@ -67,6 +67,12 @@ const validateHref = (links) => {
         validated.push(
           fetch(link.href)
           .then(response => {
+            if (response.status !== 200) {
+              return {
+                ...link,
+                status: `No soy tan malito ${response.status}`
+              }
+            }
             return {
               ...link,
               status: (colors.green('√ Ok ') + response.status)

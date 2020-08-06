@@ -4,7 +4,7 @@ const mdLinks = require('./md-links.js').readMD;
 //arguments es opcional, si no se especifica, es igual a un array vacío []
 
 //mdLinks('README.md');
-mdLinks('./README.md', { validate: true, stats: true  } )
+mdLinks('./README.md', { validate: true, stats: true })
 //.then(data => console.log('DATA',data));
 // mdLinks('./README.md', { stats: true })
 //.then(data => console.log(data));
