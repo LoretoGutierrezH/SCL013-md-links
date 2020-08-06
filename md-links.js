@@ -6,7 +6,7 @@ const jsdom = require('jsdom');
 const { EEXIST } = require('constants');
 const { JSDOM } = jsdom;
 //const axios = require('axios');
-const PQueue = require('p-queue');
+const  Table  = require ('cli-table') ; 
 
 
 const { resolve } = require('path');
@@ -26,7 +26,7 @@ const readMD = (path, options={validate: false, stats: false}) => {
     fs.readFile(path, (err, data) => {
 
       if (err) reject('No se pudo leer el archivo md :(')
-      //console.log('Archivo leído'.green);
+      console.log(colors.blue('ℹ Archivo leído'));
       const html = md.render(data.toString());
       const DOM = new JSDOM(html);
       resolve(DOM);
@@ -37,36 +37,15 @@ const readMD = (path, options={validate: false, stats: false}) => {
   })
   .then((links) => {
     if (options.validate === true && options.stats === true) {
-     const queue = new PQueue({concurrency: 1});
-
-     /* queue.addAll(
-       () => urlStats(links),
-       () => validateStats(links),
-       () => validateHref(links))
-     .then(responses => {
-      responses.map(response => console.log(response));
-      }); */
       const myPromises = [
-        () => new Promise((resolve) => setTimeout(() => {
-          resolve(validateStats(links));
-          //console.log('validateHref');
-        }, 1000)),
-        () => new Promise((resolve) => setTimeout(() => {
-          resolve(urlStats(links));
-          //console.log('urlStats');
-        }, 2000)),
-        () => new Promise((resolve) => setTimeout(() => {
-          resolve(validateHref(links));
-          //console.log('validaStats');
-        }, 10)),
+        new Promise((resolve) => setTimeout(() => {resolve(urlStats(links))}, 1000)),
+        new Promise((resolve) => setTimeout(() => {resolve(validateStats(links))}, 1000)),
+        new Promise((resolve) => setTimeout(() => {resolve(validateHref(links))}, 3000))
       ];
       
-      queue.addAll(myPromises).then(responses => {
-        responses.map(response => {
-        return console.log(response)
-        }); 
-      }); 
-
+      Promise.all(myPromises).then(responses => {
+        responses.map(response => console.log(response));
+      })
     } else if (options.validate === true) {
       return validateHref(links)
     } else if (options.stats === true) {
@@ -90,7 +69,7 @@ const validateHref = (links) => {
           .then(response => {
             return {
               ...link,
-              status: response.status
+              status: (colors.green('√ Ok ') + response.status)
             }
           })
           .catch((error) => {
@@ -103,7 +82,18 @@ const validateHref = (links) => {
       })
       resolve(Promise.all(validated)); //equivale a los resultados de todas las promesas
     })
+    .then(res =>{
+      const table = new Table({
+      head: [colors.green('LINK'), colors.green('STATUS')] , colWidths: [100, 20] 
+      });
     
+      res.forEach(link => {
+      table.push(
+          [colors.cyan(link.href), link.status]
+        );
+      }) 
+       console.log(table.toString())
+      })
     
 }
 
@@ -119,10 +109,15 @@ const urlStats = (links) => {
       }
     });
     const uniqueLinks = [...new Set(links.map((link) => link.href))].length;
-    //console.log(colors.yellow('Total Links: ' + totalLinks));
-    resolve(colors.yellow(`Total links: ${totalLinks}\nUnique: ${uniqueLinks}`));
+      // instantiate
+      const table = new Table({
+        head: [colors.green('Total Links'), colors.green('Unique')] , colWidths: [20, 20] 
+      });
+        table.push(
+          [totalLinks, uniqueLinks]
+        );
+      console.log(table.toString())
   })
-
 };
 
 const validateStats = links => {
@@ -147,7 +142,18 @@ const validateStats = links => {
   })
   .then(res =>{
     const broken = res.filter(link => link.status !=200 )
-    console.log(colors.yellow('Broken: ', broken.length))
+    // instantiate
+    const table = new Table({
+      head: [colors.green('Broken')] , colWidths: [20] 
+      });
+    
+        table.push(
+            [broken.length]
+        );
+  
+    console.log(table.toString());
+    console.log('\n')
+
   })
 }
 
@@ -168,27 +174,6 @@ const parseHtml = (dom, path) => {
   })
 }
 
-
-/* const mdLinks = (path, arguments = []) => {
-  if ((arguments.includes('--stats') && arguments.includes('--validate')) || arguments.includes('-s') && arguments.includes('-v')) {
-    readMD(path, {
-      validate: true,
-      stats: true
-    });
-  } else if (arguments.includes('--stats') || arguments.includes('-s')) {
-    readMD(path, {
-      stats: true
-    });
-  } else if (arguments.includes('--validate') || arguments.includes('-v')) {
-    readMD(path, {
-      validate: true
-    });
-  } else {
-    readMD(path);
-  }
-}
- */
 module.exports = {
   readMD: readMD,
- /*  mdLinks: mdLinks */
 }

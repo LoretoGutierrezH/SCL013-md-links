@@ -148,14 +148,15 @@ const urlStats = (links) => {
     }
   });
   const uniqueLinks = [...new Set(links.map((link) => link.href))].length;
+  // instantiate
+    const table = new Table({
+    head: [colors.green('Total Links'), colors.green('Unique')] , colWidths: [20, 20] 
+    });
   
-  let tableStats = new Table();
-  tableStats.push(totalLinks,uniqueLinks);
-  let total = 'Total Links: ' + tableStats[0];
-  let unique = 'Unique: ' + tableStats[1];
-  //let colorsTable = tableStats.map(e => colors.cyan(e))
-  console.log(total,'\n',unique);
-  //console.log(tableStats.toString());
+      table.push(
+          [totalLinks, uniqueLinks]
+      );
+      console.log(table.toString())
 };
 
 //funcion Broken
@@ -181,12 +182,22 @@ const validateStats = links => {
   })
   .then(res =>{
     const broken = res.filter(link => link.status !=200 )
-    let tableBroken = new Table();
+      // instantiate
+      const table = new Table({
+        head: [colors.green('Broken')] , colWidths: [20] 
+        });
+      
+          table.push(
+              [broken.length]
+          );
+        //  console.log(table.toString())
+    
+/*     let tableBroken = new Table();
     tableBroken.push(
       { 'Broken     ': broken.length }
-  );
+  ); */
     urlStats(links)
-    process.stdout.write(tableBroken.toString());
+    console.log(table.toString());
     console.log('\n')
     validateHref(links)
   })
